@@ -36,3 +36,12 @@ You can customize the loader by adjusting the parameters mentioned above. Additi
 ```javascript
 drawArchimedeanSpiral(xOffset, yOffset, lineColor);
 ```
+
+## Github
+
+you can clone the project from
+
+```
+
+https://github.com/Dafomchollom/spiral_loader.git
+```
