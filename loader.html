@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dynamic Archimedean Spiral loader</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="spiralCanvas"></canvas>
+  <script>
+    // Get the canvas and its 2D context
+    const canvas = document.getElementById('spiralCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // Set canvas size to match window dimensions
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    // Spiral parameters
+    let numTurns = 3; // Number of turns
+    let angleIncrement = 0.15; // Angle increment for each point
+    let rotation = 0; // Initial rotation angle
+    let rotationSpeed = 0.14; // Rotation speed
+    let clockwise = true; // Clockwise or anticlockwise rotation
+    const circleRadiusMultiplier = 15; // Multiplier for circle radius calculation
+    const borderCircleSpacing = 100; // Spacing between border circles
+
+    /**
+     * Function to draw an Archimedean Spiral with border circles
+     * @param {number} xOffset - X-axis offset for the spiral
+     * @param {number} yOffset - Y-axis offset for the spiral
+     * @param {string} lineColor - Color of the spiral
+     */
+    function drawArchimedeanSpiral(xOffset, yOffset, lineColor) {
+      // Draw border circles
+      for (let i = 0; i <= numTurns * 2 * Math.PI; i += borderCircleSpacing) {
+        const radius = i * circleRadiusMultiplier;
+        const x = canvas.width / 2 + radius * Math.cos(i - rotation) + xOffset;
+        const y = canvas.height / 2 + radius * Math.sin(i - rotation) + yOffset;
+
+        // Calculate varying circle size based on the angle
+        const circleRadius = Math.abs(Math.sin(i - rotation)) * 5 + 2;
+
+        // Draw a little circle for the border
+        ctx.beginPath();
+        ctx.arc(x, y, circleRadius, 0, 2 * Math.PI);
+        ctx.fillStyle = lineColor;
+        ctx.fill();
+      }
+
+      // Draw Archimedean spiral
+      ctx.beginPath();
+      ctx.moveTo(canvas.width / 2 + xOffset, canvas.height / 2 + yOffset);
+
+      for (let theta = 0; theta <= numTurns * 2 * Math.PI; theta += angleIncrement) {
+        const radius = theta * circleRadiusMultiplier;
+        const x = canvas.width / 2 + radius * Math.cos(theta - rotation) + xOffset;
+        const y = canvas.height / 2 + radius * Math.sin(theta - rotation) + yOffset;
+
+        // Calculate varying circle size based on the angle
+        const circleRadius = Math.abs(Math.sin(theta - rotation)) * 5 + 2;
+
+        // Draw a little circle at each point
+        ctx.beginPath();
+        ctx.arc(x, y, circleRadius, 0, 2 * Math.PI);
+        ctx.fillStyle = lineColor;
+        ctx.fill();
+      }
+    }
+
+    /**
+     * Function to animate the spirals
+     */
+    function animate() {
+      // Clear the canvas
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Draw six overlapping spirals with variations
+      drawArchimedeanSpiral(3, -3, '#f8f8f8');
+      drawArchimedeanSpiral(0, 0, '#a8a8a8');
+      drawArchimedeanSpiral(-2, 2, '#d8d8d8');
+      drawArchimedeanSpiral(4, -4, '#c9c9c9');
+      drawArchimedeanSpiral(5, -5, '#b2b0b0');
+      drawArchimedeanSpiral(-3, 3, '#e0d0d0');
+
+      // Update rotation for animation
+      rotation += clockwise ? rotationSpeed : -rotationSpeed;
+
+      // Request the next animation frame
+      requestAnimationFrame(animate);
+    }
+
+    // Adjust canvas size on window resize
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+
+    // Start the animation loop
+    animate();
+  </script>
+</body>
+</html>
